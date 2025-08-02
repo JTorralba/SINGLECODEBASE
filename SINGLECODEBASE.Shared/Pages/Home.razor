@@ -1,0 +1,13 @@
+﻿@page "/"
+
+@using SINGLECODEBASE.Shared.Services
+@inject IFormFactor FormFactor
+
+<PageTitle>SINGLECODEBASE</PageTitle>
+
+<em>@factor</em> <em>@platform</em>
+
+@code {
+    private string factor => FormFactor.GetFormFactor();
+    private string platform => FormFactor.GetPlatform();
+}
