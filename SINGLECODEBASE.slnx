@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SINGLECODEBASE/SINGLECODEBASE.Shared/SINGLECODEBASE.Shared.csproj" />
+  <Project Path="SINGLECODEBASE/SINGLECODEBASE.Web.Client/SINGLECODEBASE.Web.Client.csproj" />
+  <Project Path="SINGLECODEBASE/SINGLECODEBASE.Web/SINGLECODEBASE.Web.csproj" />
+  <Project Path="SINGLECODEBASE/SINGLECODEBASE/SINGLECODEBASE.csproj" />
+</Solution>

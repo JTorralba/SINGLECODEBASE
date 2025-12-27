@@ -1,0 +1,20 @@
+﻿@page "/"
+
+@using SINGLECODEBASE.Shared.Services
+
+@inject IFormFactor FormFactor
+
+<PageTitle>SINGLECODEBASE</PageTitle>
+
+@BlazorType
+<br />
+@DeviceType
+<br />
+@PlatformType
+<br />
+
+@code {
+    private string BlazorType => FormFactor.GetBlazorType();
+    private string DeviceType => FormFactor.GetDeviceType();
+    private string PlatformType => FormFactor.GetPlatformType();
+}
