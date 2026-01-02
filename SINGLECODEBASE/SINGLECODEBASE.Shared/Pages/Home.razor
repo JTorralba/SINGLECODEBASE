@@ -18,20 +18,27 @@
 @IP_WAN
 
 @code {
-    private string BlazorType => FormFactor.GetBlazorType();
-    private string DeviceType => FormFactor.GetDeviceType();
-    private string PlatformType => FormFactor.GetPlatformType();
+	private string BlazorType => FormFactor.GetBlazorType();
+	private string DeviceType => FormFactor.GetDeviceType();
+	private string PlatformType => FormFactor.GetPlatformType();
 
-    private string IP_WAN = string.Empty;
+	private string IP_WAN = string.Empty;
 
 	protected override async Task OnAfterRenderAsync(bool FirstRender)
 	{
 		if (!FirstRender)
 			return;
 
-		var Result = await JS.InvokeAsync<JsonElement>("eval", "fetch('https://api.ipify.org').then((body)=>body.text())");
+		try
+		{
+			var Result = await JS.InvokeAsync<JsonElement>("eval", "fetch('https://api.ipify.org').then((body)=>body.text())");
 
-		IP_WAN = $"{Result.GetString()}";
+			IP_WAN = $"{Result.GetString()}";
+		}
+		catch (Exception X)
+		{
+			IP_WAN = $"(Internet access not detected.)";
+		}
 
 		StateHasChanged();
 	}
