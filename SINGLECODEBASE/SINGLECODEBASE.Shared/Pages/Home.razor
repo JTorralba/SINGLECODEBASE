@@ -2,6 +2,9 @@
 
 @using SINGLECODEBASE.Shared.Services
 
+@using System.Text.Json
+@inject IJSRuntime JS
+
 @inject IFormFactor FormFactor
 
 <PageTitle>SINGLECODEBASE</PageTitle>
@@ -12,9 +15,24 @@
 <br />
 @PlatformType
 <br />
+@IP_WAN
 
 @code {
     private string BlazorType => FormFactor.GetBlazorType();
     private string DeviceType => FormFactor.GetDeviceType();
     private string PlatformType => FormFactor.GetPlatformType();
+
+    private string IP_WAN = string.Empty;
+
+	protected override async Task OnAfterRenderAsync(bool FirstRender)
+	{
+		if (!FirstRender)
+			return;
+
+		var Result = await JS.InvokeAsync<JsonElement>("eval", "fetch('https://api.ipify.org').then((body)=>body.text())");
+
+		IP_WAN = $"{Result.GetString()}";
+
+		StateHasChanged();
+	}
 }
