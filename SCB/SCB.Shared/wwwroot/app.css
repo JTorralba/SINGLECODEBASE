@@ -64,8 +64,13 @@ h1:focus {
     -webkit-user-select: none;
 }
 
+button,
+button:active,
 button:focus,
 button:focus-visible {
     outline: none !important;
     box-shadow: none !important;
+    border: none !important;
+    animation: none !important;
+    transition: none !important;
 }
