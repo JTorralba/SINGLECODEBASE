@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using SCB.Services;
-using SCB.Shared.Services;
 
 namespace SCB
 {
@@ -15,9 +13,6 @@ namespace SCB
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
-
-            // Add device-specific services used by the SCB.Shared project
-            builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
             builder.Services.AddMauiBlazorWebView();
 
