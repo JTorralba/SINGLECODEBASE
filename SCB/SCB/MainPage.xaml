@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:SCB"
              xmlns:shared="clr-namespace:SCB.Shared;assembly=SCB.Shared"
              x:Class="SCB.MainPage"
-             BackgroundColor="{DynamicResource PageBackgroundColor}">
+             BackgroundColor="{DynamicResource PageBackgroundColor}"
+             SafeAreaEdges="All, SoftInput">
 
     <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
