@@ -77,3 +77,7 @@ button:focus-visible {
     font-size: calc(17px + 0.5vw);
     letter-spacing: 0.03em;
 }
+
+.center-text {
+    text-align: center;
+}
