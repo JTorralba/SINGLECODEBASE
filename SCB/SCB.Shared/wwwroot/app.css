@@ -71,3 +71,9 @@ button:focus-visible {
     box-shadow: none !important;
     outline: none !important;
 }
+
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Encode Sans Condensed', sans-serif;
+    font-size: calc(17px + 0.5vw);
+    letter-spacing: 0.03em;
+}
