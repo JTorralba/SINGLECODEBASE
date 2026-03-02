@@ -1,4 +1,6 @@
+using SCB.Shared.Services;
 using SCB.Web.Components;
+using SCB.Web.Services;
 
 namespace SCB
 {
@@ -12,6 +14,8 @@ namespace SCB
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
+
+            builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
             var app = builder.Build();
 

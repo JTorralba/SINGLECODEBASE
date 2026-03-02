@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 
+using SCB.Services;
+using SCB.Shared.Services;
+
 namespace SCB
 {
     public static class MauiProgram
@@ -13,6 +16,8 @@ namespace SCB
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
+
+            builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
             builder.Services.AddMauiBlazorWebView();
 

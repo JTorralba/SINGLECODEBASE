@@ -1,7 +1,135 @@
 ﻿@page "/"
 
+@using System.Text.Json
+
+@using SCB.Shared.Services
+
+@inject IJSRuntime JS
+
+@inject IFormFactor FormFactor
+
 <PageTitle>Home</PageTitle>
 
 <div class="center">
-    <div class="center-text">SCB</div>
+    <div class="center-text">@BlazorType</div>
+    <div class="center-text">@DeviceType</div>
+    <div class="center-text">@PlatformType</div>
+	<div class="center-text">@IP_WAN</div>
+	<div class="center-text">@IP_LAN</div>
+    <div class="center-text">@TimeStamp</div>
 </div>
+
+<script>
+	async function GetTimeStamp()
+    {
+		return new Date().toLocaleTimeString();
+	}
+
+	async function GetLocalIPAddress()
+    {
+        return new Promise((Resolve, Reject) =>
+        {
+            try
+            {
+                const RTCPC = new RTCPeerConnection({ iceServers: [] });
+                const IPs = new Set();
+
+                // create a bogus data channel
+                RTCPC.createDataChannel("");
+
+                // listen for ICE candidates
+                RTCPC.onicecandidate = (Event) =>
+                {
+                    if (!Event.candidate)
+                    {
+                        // no more candidates
+                        RTCPC.close();
+
+                        Resolve(IPs.size > 0 ? Array.from(IPs)[0] : null);
+
+                        return;
+                    }
+
+                    const Candidate = Event.candidate.candidate;
+                    const IPMatch = Candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+
+                    if (IPMatch)
+                    {
+                        IPs.add(IPMatch[1]);
+                    }
+                };
+
+                // create and set local description
+                RTCPC.createOffer()
+                    .then((Offer) => RTCPC.setLocalDescription(Offer))
+                    .catch(Reject);
+            }
+            catch (E)
+            {
+                Reject(E);
+            }
+        });
+    };
+</script>
+
+@code {
+    private string BlazorType => FormFactor.GetBlazorType();
+    private string DeviceType => FormFactor.GetDeviceType();
+    private string PlatformType => FormFactor.GetPlatformType();
+
+    private string IP_WAN = string.Empty;
+	private string IP_LAN = string.Empty;
+
+    private string TimeStamp = string.Empty;
+
+	protected override async Task OnAfterRenderAsync(bool FirstRender)
+	{
+		if (!FirstRender)
+			return;
+
+		try
+		{
+			var Result = await JS.InvokeAsync<JsonElement>("eval", "fetch('https://api.ipify.org').then((body)=>body.text())");
+
+			IP_WAN = $"{Result.GetString()}";
+		}
+		catch (Exception X)
+		{
+			IP_WAN = $"WAN?";
+		}
+
+		try
+		{
+			var Result  = await JS.InvokeAsync<string>("GetLocalIPAddress");
+
+            if (string.IsNullOrEmpty(Result))
+            {
+                Result = $"WebRTC?";
+            }
+
+			IP_LAN = $"{Result}";
+		}
+		catch (Exception X)
+		{
+			IP_LAN = $"LAN?";
+		}
+
+        try
+		{
+			var Result = await JS.InvokeAsync<string>("GetTimeStamp");
+
+            if (string.IsNullOrEmpty(Result))
+            {
+                Result = $"TimeStamp?";
+            }
+
+			TimeStamp = $"{Result}";
+		}
+		catch (Exception X)
+		{
+			TimeStamp = $"TimeStamp?";
+		}
+		
+		StateHasChanged();
+	}
+}
