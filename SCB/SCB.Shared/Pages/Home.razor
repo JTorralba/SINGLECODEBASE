@@ -1,7 +1,5 @@
 ﻿@page "/"
 
-@using System.Text.Json
-
 @using SCB.Shared.Services
 
 @inject IJSRuntime JS
@@ -24,8 +22,8 @@
     private string DeviceType => FormFactor.GetDeviceType();
     private string PlatformType => FormFactor.GetPlatformType();
 
-    private string IP_WAN = string.Empty;
-	private string IP_LAN = string.Empty;
+	private string IP_WAN;
+	private string IP_LAN;
 
     private string TimeStamp = string.Empty;
 
@@ -34,49 +32,67 @@
 		if (!FirstRender)
 			return;
 
+		if (BlazorType != "Blazor Hybrid")
+		{
+			IP_WAN = FormFactor.GetIP_WAN();
+			IP_LAN = FormFactor.GetIP_LAN();
+
+			try
+			{
+				var JSON = await JS.InvokeAsync<JsonElement>("eval", "fetch('https://api.ipify.org').then((body)=>body.text())");
+
+				var Result = JSON.GetString();
+
+				if (string.IsNullOrEmpty(Result))
+				{
+					Result = "WAN?";
+				}
+
+				IP_WAN = Result;
+			}
+			catch (Exception X)
+			{
+				IP_WAN = "WAN?";
+			}
+
+			try
+			{
+				var Result  = await JS.InvokeAsync<string>("GetLocalIPAddress");
+
+				if (string.IsNullOrEmpty(Result))
+				{
+					Result = "WebRTC?";
+				}
+
+				IP_LAN = Result;
+			}
+			catch (Exception X)
+			{
+				IP_LAN = "WebRTC?";
+			}
+		}
+		else
+		{
+			IP_WAN = await FormFactor.GetIP_WAN_MAUI();
+			IP_LAN = FormFactor.GetIP_LAN_MAUI();
+		}
+
 		try
-		{
-			var Result = await JS.InvokeAsync<JsonElement>("eval", "fetch('https://api.ipify.org').then((body)=>body.text())");
-
-			IP_WAN = $"{Result.GetString()}";
-		}
-		catch (Exception X)
-		{
-			IP_WAN = $"WAN?";
-		}
-
-		try
-		{
-			var Result  = await JS.InvokeAsync<string>("GetLocalIPAddress");
-
-            if (string.IsNullOrEmpty(Result))
-            {
-                Result = $"WebRTC?";
-            }
-
-			IP_LAN = $"{Result}";
-		}
-		catch (Exception X)
-		{
-			IP_LAN = $"LAN?";
-		}
-
-        try
 		{
 			var Result = await JS.InvokeAsync<string>("GetTimeStamp");
 
             if (string.IsNullOrEmpty(Result))
             {
-                Result = $"TimeStamp?";
+                Result = "TimeStamp?";
             }
 
-			TimeStamp = $"{Result}";
+			TimeStamp = Result;
 		}
 		catch (Exception X)
 		{
-			TimeStamp = $"TimeStamp?";
+			TimeStamp = "TimeStamp?";
 		}
-		
+
 		StateHasChanged();
 	}
 }

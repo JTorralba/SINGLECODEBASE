@@ -18,5 +18,25 @@ namespace SCB.Web.Services
         {
             return Environment.OSVersion.ToString();
         }
+
+        public string GetIP_WAN()
+        {
+            return "0.0.0.0";
+        }
+
+        public string GetIP_LAN()
+        {
+            return "0.0.0.0";
+        }
+
+        public async Task<string> GetIP_WAN_MAUI()
+        {
+            return "0.0.0.0";
+        }
+
+        public string GetIP_LAN_MAUI()
+        {
+            return "0.0.0.0";
+        }
     }
 }
