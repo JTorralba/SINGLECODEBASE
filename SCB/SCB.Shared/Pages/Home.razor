@@ -9,23 +9,28 @@
 <PageTitle>Home</PageTitle>
 
 <div class="center">
-    <div class="center-text">@BlazorType</div>
-    <div class="center-text">@DeviceType</div>
-    <div class="center-text">@PlatformType</div>
-	<div class="center-text">@IP_WAN</div>
-	<div class="center-text">@IP_LAN</div>
-    <div class="center-text">@TimeStamp</div>
+	@if (GreenLight)
+	{
+		<div class="center-text">@BlazorType</div>
+		<div class="center-text">@DeviceType</div>
+		<div class="center-text">@PlatformType</div>
+		<div class="center-text">@IP_WAN</div>
+		<div class="center-text">@IP_LAN</div>
+		<div class="center-text">@TimeStamp</div>
+	}
 </div>
 
 @code {
-    private string BlazorType => FormFactor.GetBlazorType();
-    private string DeviceType => FormFactor.GetDeviceType();
-    private string PlatformType => FormFactor.GetPlatformType();
+	private bool GreenLight = false;
 
-	private string IP_WAN;
-	private string IP_LAN;
+	private string BlazorType => FormFactor.GetBlazorType();
+	private string DeviceType => FormFactor.GetDeviceType();
+	private string PlatformType => FormFactor.GetPlatformType();
 
-    private string TimeStamp = string.Empty;
+	private string IP_WAN = string.Empty;
+	private string IP_LAN = string.Empty;
+
+	private string TimeStamp = string.Empty;
 
 	protected override async Task OnAfterRenderAsync(bool FirstRender)
 	{
@@ -74,6 +79,7 @@
 		else
 		{
 			IP_WAN = await FormFactor.GetIP_WAN_MAUI();
+
 			IP_LAN = FormFactor.GetIP_LAN_MAUI();
 		}
 
@@ -81,10 +87,10 @@
 		{
 			var Result = await JS.InvokeAsync<string>("GetTimeStamp");
 
-            if (string.IsNullOrEmpty(Result))
-            {
-                Result = "TimeStamp?";
-            }
+			if (string.IsNullOrEmpty(Result))
+			{
+				Result = "TimeStamp?";
+			}
 
 			TimeStamp = Result;
 		}
@@ -93,6 +99,9 @@
 			TimeStamp = "TimeStamp?";
 		}
 
+		GreenLight = true;
+
 		StateHasChanged();
+
 	}
 }
